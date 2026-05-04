@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>VP Holding - Vinhomes Saigon Park (Hoc Mon) 1080 ha - Concept Sa Ban 3D</title>
+<link rel="stylesheet" href="../../ui/panels.css">
+</head>
+<body>
+<script>
+const PLATFORM = '../..';
+
+async function bootstrap() {
+  const ld = document.createElement('div');
+  ld.id = 'saban-loading';
+  ld.innerHTML = '<div class="spinner"></div><div>Dang dung Saigon Park 1080 ha...</div><pre id="saban-load-status">Khoi dong...</pre>';
+  document.body.appendChild(ld);
+  const log = (msg, cls) => {
+    const line = document.createElement('div');
+    if (cls) line.className = 'saban-' + cls;
+    line.textContent = msg;
+    document.getElementById('saban-load-status').appendChild(line);
+  };
+
+  await loadJs(PLATFORM + '/components/_core.js');
+  await SABAN.utils.loadAll(log, { gltf: false });
+  await loadJsSeq([
+    '/materials/procedural-textures.js',
+    '/materials/pbr-presets.js',
+    '/components/buildings/tower.js',
+    '/components/buildings/villa.js',
+    '/components/buildings/shophouse.js',
+    '/components/buildings/podium.js',
+    '/components/buildings/clubhouse.js',
+    '/components/nature/tree.js',
+    '/components/nature/bush.js',
+    '/components/nature/palm.js',
+    '/components/nature/tree-variants.js',
+    '/components/infra/road.js',
+    '/components/infra/bridge.js',
+    '/components/infra/dock.js',
+    '/components/infra/parking.js',
+    '/components/water/lagoon.js',
+    '/components/water/river.js',
+    '/components/vehicles/boat.js',
+    '/components/vehicles/yacht.js',
+    '/components/vehicles/car.js',
+    '/components/vehicles/bus.js',
+    '/components/furniture/street-lamp.js',
+    '/components/furniture/street-furniture.js',
+    '/presets/lighting.js',
+    '/presets/cameras.js',
+    '/presets/sky-time.js',
+    '/presets/keyboard-controls.js',
+    '/ui/panels.js',
+    '/composer.js'
+  ].map(p => PLATFORM + p));
+
+  log('Platform loaded. Fetching Saigon Park config...', 'ok');
+
+  let cfg;
+  try {
+    const r = await fetch('site.config.json');
+    cfg = await r.json();
+  } catch (e) {
+    log('Fetch fail: ' + e.message, 'err');
+    return;
+  }
+
+  log('Config loaded. Building 1080 ha scene...', 'ok');
+  log('Stats: 75 buildings, 2153 trees, 45 furniture', 'pending');
+
+  // Pre-register custom cameras BEFORE building UI (so labels show correctly)
+  if (cfg.cameras) {
+    cfg.cameras.forEach(c => {
+      SABAN.presets.cameras.register(c.id, {
+        pos: c.pos, target: c.target,
+        label: c.label || c.id,
+        autoNight: c.autoNight
+      });
+    });
+  }
+
+  const refs = SABAN.ui.build({
+    info: cfg.ui.info, views: cfg.ui.views, legend: cfg.ui.legend,
+    time: cfg.ui.time, timeInitial: cfg.ui.timeInitial,
+    stats: cfg.ui.stats, help: cfg.ui.help
+  });
+  ld.remove();
+
+  const stage = SABAN.utils.makeStage(refs.canvas, cfg.stage);
+
+  // For 1080 ha scale, increase OrbitControls range
+  stage.controls.minDistance = 50;
+  stage.controls.maxDistance = 8000;
+
+  const lights = SABAN.presets.lighting.standard(stage.scene, cfg.lighting);
+  const sky = SABAN.presets.sky.create(stage.scene, { scale: 30000 });
+
+  // Build all buildings/water/etc — this will take a moment with 2153 trees
+  SABAN.compose(stage, sky, lights, cfg);
+
+  // Wire time slider
+  let timeChange = null;
+  if (refs.timeSlider) {
+    timeChange = () => {
+      const t = parseFloat(refs.timeSlider.value) / 100;
+      SABAN.presets.sky.timeOfDay({
+        scene: stage.scene, sky, sun: lights.sun,
+        ambient: lights.ambient, renderer: stage.renderer
+      }, t);
+      refs.timeLabel.textContent = SABAN.presets.sky.formatTime(refs.timeSlider.value);
+    };
+    refs.timeSlider.addEventListener('input', timeChange);
+    timeChange();
+  }
+
+  const goView = (name) => {
+    const v = SABAN.presets.cameras.lerp(stage, name, 1500);
+    if (v.autoNight && refs.timeSlider) {
+      refs.timeSlider.value = 92;
+      timeChange && timeChange();
+    }
+  };
+  if (refs.onViewClick) refs.onViewClick(goView);
+
+  // Keyboard with bigger speeds for 1080ha
+  SABAN.presets.keyboard.attach(stage, {
+    panSpeed: 8.0, dollySpeed: 6.0, yawSpeed: 0.8, pitchSpeed: 0.6,
+    onPresetView: goView, onTogglePanel: refs.togglePanel
+  });
+
+  refs.hideLoading();
+  SABAN.utils.startLoop(stage, fps => refs.setFps && refs.setFps(fps));
+}
+
+function loadJs(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = () => reject(new Error('Failed: ' + src));
+    document.head.appendChild(s);
+  });
+}
+async function loadJsSeq(srcs) { for (let i = 0; i < srcs.length; i++) await loadJs(srcs[i]); }
+
+bootstrap().catch(err => {
+  console.error(err);
+  document.body.insertAdjacentHTML('beforeend',
+    '<pre style="color:red;padding:20px;background:#000;position:fixed;top:0;left:0;right:0;z-index:9999">'
+    + (err.stack || err.message) + '</pre>');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+{
+  "name": "Phuc Thinh Tam Da (v1.1 — Asset Library)",
+  "description": "3.71 ha, 8 thap 30F, Marina Song Tac. v1.1 voi cot den, xe buyt, cay co thu, fountain, ghe da",
+  "scale": { "unit": "meter", "ratio": 1 },
+  "site": {
+    "shape": "polygon",
+    "vertices": [[-130,-100],[130,-100],[50,100],[-50,100]],
+    "boundaryColor": "0xffd166",
+    "farLand": { "color": "0x6a8a52", "size": 2000 },
+    "area_ha": 3.71,
+    "northDeg": 0
+  },
+  "ui": {
+    "info": {
+      "title": "PHUC THINH TAM DA — Sa Ban 3D v1.1",
+      "subtitle": "3.71 ha, 8 thap 30F, Marina Song Tac, Long Phuoc TP.HCM",
+      "footer": "PBR Glass, Real-World Dim, Keyboard + Touch, Toggleable Panels"
+    },
+    "views": ["aerial_sw","aerial_top","aerial_e","aerial_s","aerial_se_night","ground"],
+    "legend": [
+      { "color": "#88c4a8", "label": "Tower kinh xanh + thanh go (8 x 30F = 105m)" },
+      { "color": "#3aa9d6", "label": "Ho boi lagoon (R 28m)" },
+      { "color": "#1a5a7a", "label": "Song Tac + Marina (R 400m)" },
+      { "color": "#8b6f47", "label": "Cau tau go + 12 du thuyen" },
+      { "color": "#2e5a2a", "label": "Cay co thu (BigTree 14m)" },
+      { "color": "#7aa84a", "label": "Cay nho (SmallTree 3m)" },
+      { "color": "#ffd690", "label": "Cot den LED 8m + den dem" },
+      { "color": "#5a5a5a", "label": "Cao toc DCT Bac-Nam (rong 30m)" },
+      { "color": "#fff3a0", "label": "Bus, Car animated tren cao toc" }
+    ],
+    "time": true,
+    "timeInitial": 60,
+    "stats": true,
+    "help": true
+  },
+  "buildings": [
+    { "type": "Tower", "x": -30, "z": -75, "floors": 30, "width": 22, "depth": 22, "name": "T1" },
+    { "type": "Tower", "x":  10, "z": -65, "floors": 30, "width": 22, "depth": 22, "name": "T2" },
+    { "type": "Tower", "x": -75, "z": -50, "floors": 30, "width": 22, "depth": 22, "name": "T3" },
+    { "type": "Tower", "x": -95, "z": -10, "floors": 30, "width": 22, "depth": 22, "name": "T4" },
+    { "type": "Tower", "x": -95, "z":  10, "floors": 30, "width": 22, "depth": 22, "name": "T5" },
+    { "type": "Tower", "x": -75, "z":  50, "floors": 30, "width": 22, "depth": 22, "name": "T6" },
+    { "type": "Tower", "x": -30, "z":  75, "floors": 30, "width": 22, "depth": 22, "name": "T7" },
+    { "type": "Tower", "x":  10, "z":  65, "floors": 30, "width": 22, "depth": 22, "name": "T8" },
+    { "type": "Clubhouse", "x": 50, "z": 0, "width": 50, "depth": 24, "height": 8, "dome": true }
+  ],
+  "water": [
+    { "type": "River", "mode": "rectangle", "x": 330, "z": 0, "width": 400, "length": 1200, "color": 6571882, "normalScale": 0.6, "normalRepeat": [8,24], "flowSpeed": {"x":0.015,"y":0.005} },
+    { "type": "Lagoon", "x": -15, "z": 0, "radius": 28, "scale": [1.4,0.7], "color": 3844566, "withDeck": true, "deckRingOuter": 50, "flowSpeed": {"x":0.008,"y":0.012} },
+    { "type": "Canal", "x": 0, "z": -180, "width": 18, "length": 900, "color": 2775114, "flowSpeed": {"x":0.03,"y":0} }
+  ],
+  "beach": [
+    { "x": 140, "z": 0, "width": 20, "length": 800 }
+  ],
+  "infra": [
+    { "type": "Road", "mode": "strip", "x": -180, "z": 0, "length": 800, "width": 14, "lanes": true },
+    { "type": "Road", "mode": "loop",  "cx": -25, "cz": 0, "rx": 75, "rz": 80, "width": 4, "segments": 64 },
+    { "type": "Expressway", "x": 0, "z": 200, "length": 900, "width": 30, "deckHeight": 5, "direction": "x" },
+    { "type": "Boardwalk", "x": 150, "z": 0, "length": 200, "width": 6, "height": 0.7 },
+    { "type": "Dock", "x": 180, "z": -75, "length": 60, "width": 4 },
+    { "type": "Dock", "x": 180, "z": -45, "length": 60, "width": 4 },
+    { "type": "Dock", "x": 180, "z": -15, "length": 60, "width": 4 },
+    { "type": "Dock", "x": 180, "z":  15, "length": 60, "width": 4 },
+    { "type": "Dock", "x": 180, "z":  45, "length": 60, "width": 4 },
+    { "type": "Dock", "x": 180, "z":  75, "length": 60, "width": 4 }
+  ],
+  "vegetation": {
+    "trees": [
+      [-380,-240,1.0],[-280,-245,1.0],[-180,-250,1.0],[-80,-240,1.0],[20,-245,1.0],[120,-250,1.0],[220,-240,1.0],[320,-245,1.0],
+      [-360,-230,1.0],[-260,-240,1.0],[-160,-225,1.0],[-60,-245,1.0],[40,-230,1.0],[140,-240,1.0],[240,-228,1.0],[340,-235,1.0],
+      [128,-350,1.0],[130,-250,1.0],[127,-150,1.0],[129,-50,1.0],[131,50,1.0],[128,150,1.0],[130,250,1.0],[127,350,1.0],
+      [-218,-350,1.0],[-220,-250,1.0],[-217,-150,1.0],[-219,-50,1.0],[-221,50,1.0],[-218,150,1.0],[-220,250,1.0],[-217,350,1.0],
+      [-180,130,1.0],[-160,140,1.0],[-140,135,1.0],[-120,145,1.0],[-100,130,1.0],[-80,140,1.0],[-60,135,1.0],[-40,145,1.0],[-20,130,1.0],[0,140,1.0],[20,135,1.0],[40,145,1.0],[60,130,1.0],[80,140,1.0],[100,135,1.0],[120,145,1.0],[140,130,1.0],[160,140,1.0]
+    ],
+    "bigTrees": [
+      [25,-10,1.0],[25,10,1.0],[-50,0,1.0],[-100,25,1.0],[-100,-25,1.0],
+      [80,-50,0.95],[80,50,0.95],[50,-80,1.0],[50,80,1.0]
+    ],
+    "smallTrees": [
+      [-30,-45,1.0],[-25,-45,0.9],[-20,-48,1.0],[-15,-45,0.95],
+      [-30,45,1.0],[-25,45,0.9],[-20,48,1.0],[-15,45,0.95],
+      [10,-45,1.0],[15,-48,0.9],[20,-45,1.0],
+      [10,45,1.0],[15,48,0.9],[20,45,1.0],
+      [40,-10,0.85],[40,10,0.85],[60,-10,0.85],[60,10,0.85]
+    ],
+    "tallPalms": [
+      { "x": 152, "z": -80 },{ "x": 152, "z": -40 },{ "x": 152, "z": 0 },
+      { "x": 152, "z": 40 },{ "x": 152, "z": 80 },{ "x": 152, "z": -120 },{ "x": 152, "z": 120 }
+    ],
+    "shortPalms": [
+      { "x": 70, "z": -25 },{ "x": 70, "z": -15 },{ "x": 70, "z": -5 },
+      { "x": 70, "z": 5 },{ "x": 70, "z": 15 },{ "x": 70, "z": 25 }
+    ],
+    "hedges": [
+      { "from": [-130,95], "to": [50,95], "height": 1.2 },
+      { "from": [-130,-95], "to": [130,-95], "height": 1.2 }
+    ]
+  },
+  "vehicles": [
+    { "type": "Yacht", "x": 195, "z": -67, "length": 26, "decks": 2, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 215, "z": -67, "length": 18, "withCabin": true, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 195, "z": -37, "length": 18, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 215, "z": -37, "length": 18, "rotationY": 1.5708 },
+    { "type": "Yacht", "x": 195, "z": -7, "length": 28, "decks": 2, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 215, "z": -7, "length": 18, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 195, "z": 23, "length": 18, "rotationY": 1.5708 },
+    { "type": "Yacht", "x": 215, "z": 23, "length": 30, "decks": 3, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 195, "z": 53, "length": 18, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 215, "z": 53, "length": 18, "rotationY": 1.5708 },
+    { "type": "Boat", "x": 195, "z": 83, "length": 18, "rotationY": 1.5708 },
+    { "type": "Yacht", "x": 215, "z": 83, "length": 28, "decks": 2, "rotationY": 1.5708 }
+  ],
+  "streetFurniture": [
+    { "type": "StreetLampLine", "from": [-180,-380], "to": [-180,380], "spacing": 30, "mode": "single", "rotationOffset": 1.5708 },
+    { "type": "StreetLampLine", "from": [-440,180], "to": [440,180], "spacing": 35, "mode": "single", "rotationOffset": 0, "height": 10 },
+    { "type": "StreetLampLine", "from": [-440,220], "to": [440,220], "spacing": 35, "mode": "single", "rotationOffset": 3.14159, "height": 10 },
+    { "type": "StreetLampLine", "from": [140,-90], "to": [140,90], "spacing": 25, "mode": "double" },
+    { "type": "Fountain", "x": -50, "z": 0, "radius": 4, "height": 0.8 },
+    { "type": "Bench", "x": 30, "z": -25, "rotationY": 0 },
+    { "type": "Bench", "x": 30, "z": -10, "rotationY": 0 },
+    { "type": "Bench", "x": 30, "z": 10, "rotationY": 0 },
+    { "type": "Bench", "x": 30, "z": 25, "rotationY": 0 },
+    { "type": "Bench", "x": -50, "z": -45, "rotationY": 0 },
+    { "type": "Bench", "x": -50, "z": 45, "rotationY": 3.14159 },
+    { "type": "Flagpole", "x": -125, "z": -85, "height": 12, "flagColor": "0xc0102b" },
+    { "type": "Pavilion", "x": -75, "z": 0, "width": 5, "depth": 5, "height": 3.5 },
+    { "type": "TrashBin", "x": 33, "z": -22 },
+    { "type": "TrashBin", "x": 33, "z": 22 },
+    { "type": "Bollard", "x": 145, "z": -85 },
+    { "type": "Bollard", "x": 145, "z": -75 },
+    { "type": "Bollard", "x": 145, "z": -65 },
+    { "type": "Bollard", "x": 145, "z": 65 },
+    { "type": "Bollard", "x": 145, "z": 75 },
+    { "type": "Bollard", "x": 145, "z": 85 },
+    { "type": "Sign", "x": -125, "z": -100, "width": 2.5, "height": 1.5, "postHeight": 3, "color": "0x4a90c2" }
+  ],
+  "animatedCars": {
+    "count": 12,
+    "y": 7.1,
+    "xRange": [-460, 460],
+    "zLanes": [195, 205]
+  },
+  "animatedBuses": {
+    "count": 4,
+    "y": 7.1,
+    "xRange": [-460, 460],
+    "zLanes": [197, 203]
+  },
+  "cameras": [],
+  "lighting": {
+    "ambientIntensity": 0.6,
+    "sunIntensity": 1.4,
+    "shadowExtent": 300
+  },
+  "stage": {
+    "camera": {
+      "fov": 45,
+      "near": 1,
+      "far": 6000,
+      "position": [380, 280, 380],
+      "target": [-20, 30, 0]
+    }
+  }
+}

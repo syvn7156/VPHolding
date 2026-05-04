@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if npm is used later)
+node_modules/
+package-lock.json
+
+# Screenshots & temp
+*.tmp

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>VP Holding — Phúc Thịnh Tam Đa 3.71 ha · Sa Bàn 3D v1.1</title>
+<link rel="stylesheet" href="../../ui/panels.css">
+</head>
+<body>
+<script>
+// ============================================================
+// PHÚC THỊNH TAM ĐA — SaBan 3D Platform v1.1
+// --------------------------------------------------------------
+// v1.1: + 18 components (cars, buses, street furniture, tree variants)
+//       + keyboard controls (arrows + WASD)
+//       + mobile/tablet touch + responsive panels
+//       + toggleable legend / panels
+// ============================================================
+
+const PLATFORM = '../..';
+
+async function bootstrap() {
+  const ld = document.createElement('div');
+  ld.id = 'saban-loading';
+  ld.innerHTML = '<div class="spinner"></div><div>Đang tải sa bàn 3D v1.1... (Loading)</div><pre id="saban-load-status">Khởi động...</pre>';
+  document.body.appendChild(ld);
+  const log = (msg, cls) => {
+    const line = document.createElement('div');
+    if (cls) line.className = 'saban-' + cls;
+    line.textContent = msg;
+    document.getElementById('saban-load-status').appendChild(line);
+  };
+
+  // 1. Core
+  await loadJs(PLATFORM + '/components/_core.js');
+
+  // 2. Three.js + addons
+  await SABAN.utils.loadAll(log, { gltf: false });
+
+  // 3. Platform modules (v1.1 — added new components + keyboard)
+  await loadJsSeq([
+    '/materials/procedural-textures.js',
+    '/materials/pbr-presets.js',
+    // Buildings
+    '/components/buildings/tower.js',
+    '/components/buildings/villa.js',
+    '/components/buildings/shophouse.js',
+    '/components/buildings/podium.js',
+    '/components/buildings/clubhouse.js',
+    // Nature
+    '/components/nature/tree.js',
+    '/components/nature/bush.js',
+    '/components/nature/palm.js',
+    '/components/nature/tree-variants.js',     // v1.1
+    // Infrastructure
+    '/components/infra/road.js',
+    '/components/infra/bridge.js',
+    '/components/infra/dock.js',
+    '/components/infra/parking.js',
+    // Water
+    '/components/water/lagoon.js',
+    '/components/water/river.js',
+    // Vehicles (v1.1 added Car, SUV, Truck, Motorbike, Bus, Minibus)
+    '/components/vehicles/boat.js',
+    '/components/vehicles/yacht.js',
+    '/components/vehicles/car.js',              // v1.1
+    '/components/vehicles/bus.js',              // v1.1
+    // Furniture (v1.1 NEW)
+    '/components/furniture/street-lamp.js',     // v1.1
+    '/components/furniture/street-furniture.js',// v1.1
+    // Presets
+    '/presets/lighting.js',
+    '/presets/cameras.js',
+    '/presets/sky-time.js',
+    '/presets/keyboard-controls.js',            // v1.1
+    // UI + composer
+    '/ui/panels.js',
+    '/composer.js'
+  ].map(p => PLATFORM + p));
+
+  log('✓ Platform v1.1 ready. Loading site config...', 'ok');
+
+  let cfg;
+  try {
+    const r = await fetch('site.config.json');
+    cfg = await r.json();
+  } catch (e) {
+    log('✗ fetch site.config.json failed: ' + e.message, 'err');
+    log('Hint: dùng VS Code Live Server hoặc paste JSON inline.', 'pending');
+    return;
+  }
+
+  log('✓ Config loaded. Building scene...', 'ok');
+
+  // Build UI
+  const refs = SABAN.ui.build({
+    info:   cfg.ui.info,
+    views:  cfg.ui.views,
+    legend: cfg.ui.legend,
+    time:   cfg.ui.time,
+    timeInitial: cfg.ui.timeInitial,
+    stats:  cfg.ui.stats,
+    help:   cfg.ui.help
+  });
+  ld.remove();
+
+  // Stage + lights + sky
+  const stage = SABAN.utils.makeStage(refs.canvas, cfg.stage);
+  const lights = SABAN.presets.lighting.standard(stage.scene, cfg.lighting);
+  const sky = SABAN.presets.sky.create(stage.scene);
+
+  // Compose scene
+  SABAN.compose(stage, sky, lights, cfg);
+
+  // Wire time slider
+  let timeChange = null;
+  if (refs.timeSlider) {
+    timeChange = () => {
+      const t = parseFloat(refs.timeSlider.value) / 100;
+      SABAN.presets.sky.timeOfDay({
+        scene: stage.scene, sky, sun: lights.sun,
+        ambient: lights.ambient, renderer: stage.renderer
+      }, t);
+      refs.timeLabel.textContent = SABAN.presets.sky.formatTime(refs.timeSlider.value);
+    };
+    refs.timeSlider.addEventListener('input', timeChange);
+    timeChange();
+  }
+
+  // Wire camera view buttons
+  const goView = (name) => {
+    const v = SABAN.presets.cameras.lerp(stage, name, 1100);
+    if (v.autoNight && refs.timeSlider) {
+      refs.timeSlider.value = 90;
+      timeChange && timeChange();
+    }
+  };
+  if (refs.onViewClick) refs.onViewClick(goView);
+
+  // Wire keyboard controls (v1.1)
+  SABAN.presets.keyboard.attach(stage, {
+    panSpeed: 1.5, dollySpeed: 1.2, yawSpeed: 0.8, pitchSpeed: 0.6,
+    onPresetView: goView,
+    onTogglePanel: refs.togglePanel
+  });
+
+  // Show panels + start loop
+  refs.hideLoading();
+  SABAN.utils.startLoop(stage, fps => refs.setFps && refs.setFps(fps));
+}
+
+function loadJs(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = () => reject(new Error('Failed: ' + src));
+    document.head.appendChild(s);
+  });
+}
+async function loadJsSeq(srcs) { for (let i = 0; i < srcs.length; i++) await loadJs(srcs[i]); }
+
+bootstrap().catch(err => {
+  console.error(err);
+  document.body.insertAdjacentHTML('beforeend',
+    '<pre style="color:red;padding:20px;background:#000;position:fixed;top:0;left:0;right:0;z-index:9999">'
+    + (err.stack || err.message) + '</pre>');
+});
+</script>
+</body>
+</html>

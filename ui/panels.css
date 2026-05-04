@@ -1,0 +1,191 @@
+/* ============================================================
+ * SABAN — UI PANELS (standard styling, responsive)
+ * --------------------------------------------------------------
+ * Inject via <link rel="stylesheet"> or inline. All classes
+ * scoped to #saban-ui-root or .saban-* prefixes.
+ * v1.1: + responsive media queries (mobile/tablet) + toggle UX
+ * ============================================================ */
+
+* { box-sizing: border-box; }
+html, body { touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+body {
+  margin: 0; overflow: hidden;
+  background: #0a1929;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+}
+#saban-canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+
+.saban-panel {
+  position: absolute;
+  background: rgba(15, 30, 55, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  z-index: 10;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+#saban-info { top: 14px; left: 14px; max-width: 360px; }
+#saban-info h1 { margin: 0 0 4px; font-size: 14px; color: #ffd166; }
+#saban-info .sub { font-size: 11px; color: #bcd; line-height: 1.6; }
+#saban-info kbd {
+  background: #223; padding: 2px 6px; border-radius: 3px;
+  border: 1px solid #455; font-size: 10.5px; color: #e8f0ff;
+}
+
+#saban-views { top: 14px; right: 14px; min-width: 220px; }
+#saban-views .header { font-size: 10.5px; color: #bcd; margin-bottom: 5px; }
+#saban-views button {
+  display: block; width: 100%;
+  margin: 3px 0; padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff; cursor: pointer;
+  border-radius: 5px; font-size: 12px;
+  text-align: left;
+  transition: all .15s;
+}
+#saban-views button:hover {
+  background: #ffd166; color: #0a1929; border-color: #ffd166;
+}
+
+#saban-legend { bottom: 80px; left: 14px; font-size: 11px; }
+#saban-legend .header { font-weight: 700; margin-bottom: 4px; color: #ffd166; }
+#saban-legend .swatch {
+  display: inline-block; width: 11px; height: 11px;
+  margin-right: 6px; vertical-align: middle;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+#saban-legend .row { margin: 2px 0; }
+
+#saban-time {
+  bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  min-width: 380px; text-align: center;
+}
+#saban-time label { display: block; margin-bottom: 6px; font-size: 11px; color: #bcd; }
+#saban-time input { width: 100%; cursor: pointer; }
+#saban-time .vals {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: #8aa; margin-top: 4px;
+}
+
+#saban-stats {
+  bottom: 14px; right: 14px;
+  font-size: 10.5px; color: #8aa; font-family: monospace;
+}
+
+#saban-loading {
+  position: fixed; inset: 0;
+  background: #0a1929;
+  display: flex; align-items: center; justify-content: center;
+  color: #ffd166; font-size: 16px;
+  z-index: 100;
+  flex-direction: column; gap: 14px;
+  padding: 20px; text-align: center;
+}
+#saban-loading .spinner {
+  width: 42px; height: 42px;
+  border: 3px solid #233;
+  border-top-color: #ffd166;
+  border-radius: 50%;
+  animation: saban-spin 1s linear infinite;
+}
+@keyframes saban-spin { to { transform: rotate(360deg); } }
+#saban-loading pre {
+  font-size: 12px; color: #bcd;
+  max-width: 600px; line-height: 1.6;
+  font-family: monospace; text-align: left;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px; border-radius: 6px;
+  min-width: 400px;
+  margin: 0;
+}
+.saban-ok { color: #4ade80; }
+.saban-err { color: #f87171; }
+.saban-pending { color: #fbbf24; }
+
+.saban-hidden { display: none !important; }
+
+/* ============================================================
+ * v1.1 — Toggle button (eye icon top-right of each panel)
+ * ============================================================ */
+.saban-toggle-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 22px; height: 22px;
+  background: rgba(255,255,255,0.08);
+  color: #ffd166;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; line-height: 1;
+}
+.saban-toggle-btn:hover { background: #ffd166; color: #0a1929; }
+
+.saban-panel-collapsed > *:not(.saban-toggle-btn) { display: none; }
+.saban-panel-collapsed { padding: 4px 6px; min-width: 0 !important; max-width: 30px !important; min-height: 30px; }
+
+/* Master controls (top-left corner — H/L hotkey hint + clean view) */
+#saban-master-controls {
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  font-size: 11px;
+  display: flex; gap: 6px;
+}
+#saban-master-controls button {
+  background: rgba(15,30,55,0.88);
+  color: #bcd;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  backdrop-filter: blur(8px);
+}
+#saban-master-controls button:hover { background: #ffd166; color: #0a1929; }
+#saban-master-controls .active { background: #ffd166; color: #0a1929; }
+
+/* Help panel (keyboard shortcuts) */
+#saban-help {
+  bottom: 80px; right: 14px;
+  font-size: 11px; max-width: 240px;
+}
+#saban-help h2 { font-size: 12px; margin: 0 0 6px; color: #ffd166; }
+#saban-help table { width: 100%; border-collapse: collapse; }
+#saban-help td { padding: 2px 4px; }
+#saban-help td:first-child { color: #ffd166; font-family: monospace; white-space: nowrap; }
+
+/* ============================================================
+ * Mobile / tablet (≤ 768px wide)
+ * ============================================================ */
+@media (max-width: 768px) {
+  .saban-panel { font-size: 11px; padding: 8px 10px; border-radius: 8px; }
+  #saban-info { max-width: 200px; top: 8px; left: 8px; }
+  #saban-info h1 { font-size: 12px; }
+  #saban-info .sub { font-size: 10px; }
+  #saban-info kbd { display: none; }   /* hide keyboard hints on touch */
+  #saban-views { top: 8px; right: 8px; min-width: 150px; }
+  #saban-views button { padding: 5px 8px; font-size: 11px; }
+  #saban-legend { bottom: 100px; left: 8px; font-size: 10px; max-width: 180px; }
+  #saban-time { min-width: 280px; bottom: 8px; }
+  #saban-time label { font-size: 10px; }
+  #saban-stats { bottom: 8px; right: 8px; font-size: 9.5px; }
+  #saban-help { display: none; }       /* no kbd shortcuts on mobile */
+  #saban-master-controls { top: 8px; }
+  #saban-master-controls button { padding: 5px 8px; font-size: 10px; }
+}
+
+/* Tablet portrait — reduce slightly */
+@media (max-width: 1024px) and (min-width: 769px) {
+  #saban-info { max-width: 280px; }
+  #saban-time { min-width: 320px; }
+}

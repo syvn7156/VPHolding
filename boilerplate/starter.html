@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SABAN 3D — Starter</title>
+<link rel="stylesheet" href="../ui/panels.css">
+</head>
+<body>
+<script>
+// ============================================================
+// SABAN 3D — STARTER BOILERPLATE
+// --------------------------------------------------------------
+// 1. Load core + libs (with CDN fallback)
+// 2. Load components/materials/presets
+// 3. Fetch site.config.json
+// 4. Build scene via SABAN.compose
+// 5. Wire UI events (views, time slider)
+// ============================================================
+
+// ---- 0. INLINED SITE CONFIG (replace with fetch if you prefer) ----
+// To keep this starter self-contained on file://, paste your JSON here.
+// Or change to: fetch('site.config.json').then(r => r.json())
+const SITE_CONFIG_DEFAULT = null; // null = will fetch site.config.json
+
+// ---- 1. Bootstrap ----
+async function bootstrap() {
+  // 1a. Load core helpers (no THREE yet)
+  await loadJs('../components/_core.js');
+
+  // 1b. Load all libs via SABAN loader (local first, CDN fallback)
+  const ui = SABAN.ui ? null : null; // ui not yet loaded
+  // Build a tiny inline loading log
+  const loadingDiv = document.createElement('div');
+  loadingDiv.id = 'saban-loading';
+  loadingDiv.innerHTML = '<div class="spinner"></div><div>Đang tải...</div><pre id="saban-load-status">Khởi động...</pre>';
+  document.body.appendChild(loadingDiv);
+  // Need to load CSS first if not in <link>
+  const log = (msg, cls) => {
+    const line = document.createElement('div');
+    if (cls) line.className = 'saban-' + cls;
+    line.textContent = msg;
+    document.getElementById('saban-load-status').appendChild(line);
+  };
+
+  await SABAN.utils.loadAll(log, { gltf: true });
+
+  // 1c. Load platform JS (in dependency order)
+  await loadJsSeq([
+    '../materials/procedural-textures.js',
+    '../materials/pbr-presets.js',
+    '../components/buildings/tower.js',
+    '../components/buildings/villa.js',
+    '../components/buildings/shophouse.js',
+    '../components/buildings/podium.js',
+    '../components/buildings/clubhouse.js',
+    '../components/nature/tree.js',
+    '../components/nature/bush.js',
+    '../components/nature/palm.js',
+    '../components/infra/road.js',
+    '../components/infra/bridge.js',
+    '../components/infra/dock.js',
+    '../components/infra/parking.js',
+    '../components/water/lagoon.js',
+    '../components/water/river.js',
+    '../components/vehicles/boat.js',
+    '../components/vehicles/yacht.js',
+    '../presets/lighting.js',
+    '../presets/cameras.js',
+    '../presets/sky-time.js',
+    '../ui/panels.js',
+    '../composer.js'
+  ]);
+
+  log('✓ Tất cả module đã load. Build scene...', 'ok');
+
+  // 2. Fetch site config
+  let cfg = SITE_CONFIG_DEFAULT;
+  if (!cfg) {
+    try {
+      const r = await fetch('site.config.json');
+      cfg = await r.json();
+    } catch (e) {
+      log('✗ Không tải được site.config.json: ' + e.message, 'err');
+      log('Hint: file:// có thể bị CORS — paste JSON trực tiếp vào SITE_CONFIG_DEFAULT', 'pending');
+      return;
+    }
+  }
+
+  // 3. Build UI
+  const refs = SABAN.ui.build({
+    info: cfg.ui && cfg.ui.info,
+    views: cfg.ui && cfg.ui.views,
+    legend: cfg.ui && cfg.ui.legend,
+    time: cfg.ui && cfg.ui.time,
+    timeInitial: cfg.ui && cfg.ui.timeInitial,
+    stats: cfg.ui && cfg.ui.stats
+  });
+
+  // remove our temp loading
+  loadingDiv.remove();
+
+  // 4. Stage
+  const stage = SABAN.utils.makeStage(refs.canvas, cfg.stage || {});
+  const lights = SABAN.presets.lighting.standard(stage.scene, cfg.lighting || {});
+  const sky = SABAN.presets.sky.create(stage.scene);
+
+  // 5. Compose scene from JSON
+  SABAN.compose(stage, sky, lights, cfg);
+
+  // 6. Wire view buttons
+  if (refs.onViewClick) {
+    refs.onViewClick(name => {
+      const v = SABAN.presets.cameras.lerp(stage, name, 1100);
+      if (v.autoNight && refs.timeSlider) {
+        refs.timeSlider.value = 90;
+        onTimeChange();
+      }
+    });
+  }
+
+  // 7. Wire time slider
+  function onTimeChange() {
+    if (!refs.timeSlider) return;
+    const t = parseFloat(refs.timeSlider.value) / 100;
+    SABAN.presets.sky.timeOfDay({
+      scene: stage.scene, sky: sky, sun: lights.sun,
+      ambient: lights.ambient, renderer: stage.renderer
+    }, t);
+    refs.timeLabel.textContent = SABAN.presets.sky.formatTime(refs.timeSlider.value);
+  }
+  if (refs.timeSlider) {
+    refs.timeSlider.addEventListener('input', onTimeChange);
+    onTimeChange();
+  }
+
+  // 8. Show panels, start loop
+  refs.hideLoading();
+  SABAN.utils.startLoop(stage, fps => refs.setFps && refs.setFps(fps));
+}
+
+// ---- helpers ----
+function loadJs(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+async function loadJsSeq(srcs) {
+  for (let i = 0; i < srcs.length; i++) await loadJs(srcs[i]);
+}
+
+bootstrap().catch(err => {
+  console.error(err);
+  document.body.innerHTML += '<pre style="color:red;padding:20px">' + err.stack + '</pre>';
+});
+</script>
+</body>
+</html>

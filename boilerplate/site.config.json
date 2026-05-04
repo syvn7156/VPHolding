@@ -1,0 +1,65 @@
+{
+  "$schema": "https://vp-holding/saban-3d/site-config.schema.json",
+  "name": "Sample Site",
+  "description": "Boilerplate config — copy + edit cho dự án mới",
+  "scale": { "unit": "meter", "ratio": 1 },
+  "site": {
+    "shape": "polygon",
+    "vertices": [
+      [-130, -100],
+      [130, -100],
+      [50, 100],
+      [-50, 100]
+    ],
+    "boundaryColor": "0xffd166",
+    "farLand": { "color": "0x6a8a52", "size": 2000 },
+    "area_ha": 3.71,
+    "northDeg": 0
+  },
+  "ui": {
+    "info": {
+      "title": "🏝️ TÊN DỰ ÁN",
+      "subtitle": "Diện tích · Vị trí · Đặc trưng",
+      "footer": "PBR Glass · Wood Texture · Real Water · Sky Shader"
+    },
+    "views": ["aerial_sw", "aerial_top", "aerial_e", "aerial_s", "aerial_se_night", "ground"],
+    "legend": [
+      { "color": "#88c4a8", "label": "Tower kính xanh" },
+      { "color": "#3aa9d6", "label": "Hồ bơi lagoon" },
+      { "color": "#1a5a7a", "label": "Sông + Marina" },
+      { "color": "#3a6a3a", "label": "Cây xanh + công viên" }
+    ],
+    "time": true,
+    "timeInitial": 60,
+    "stats": true
+  },
+  "buildings": [
+    { "type": "Tower", "x": 0, "z": 0, "floors": 30, "width": 22, "depth": 22, "name": "T1" }
+  ],
+  "water": [
+    { "type": "Lagoon", "x": -15, "z": 0, "radius": 28, "scale": [1.4, 0.7], "color": "0x3aa9d6" }
+  ],
+  "infra": [],
+  "vegetation": {
+    "trees": [
+      [-40, -50, 1.0], [-30, -55, 0.9], [-20, -52, 1.1],
+      [40, 50, 1.0], [30, 55, 0.9], [50, 48, 1.0]
+    ]
+  },
+  "vehicles": [],
+  "cameras": [],
+  "lighting": {
+    "ambientIntensity": 0.6,
+    "sunIntensity": 1.4,
+    "shadowExtent": 300
+  },
+  "stage": {
+    "camera": {
+      "fov": 45,
+      "near": 1,
+      "far": 6000,
+      "position": [380, 280, 380],
+      "target": [-20, 30, 0]
+    }
+  }
+}
